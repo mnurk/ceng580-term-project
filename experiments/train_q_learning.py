@@ -1,9 +1,19 @@
+import random
+
 from config import config
 from env.pipeline_env import PipelineEnv
 from rl.q_learning_scheduler import QLearningScheduler
 
 
-def train_q_learning(num_episodes=1000, verbose=False, env_class=PipelineEnv):
+def train_q_learning(
+        num_episodes=1000,
+        verbose=False,
+        env_class=PipelineEnv,
+        seed=None
+):
+    if seed is not None:
+        random.seed(seed)
+
     env = env_class(config)
 
     scheduler = QLearningScheduler(
@@ -54,7 +64,15 @@ def train_q_learning(num_episodes=1000, verbose=False, env_class=PipelineEnv):
     return scheduler, results
 
 
-def evaluate_scheduler(scheduler, num_episodes=100, env_class=PipelineEnv):
+def evaluate_scheduler(
+        scheduler,
+        num_episodes=100,
+        env_class=PipelineEnv,
+        seed=None
+):
+    if seed is not None:
+        random.seed(seed)
+
     original_epsilon = scheduler.epsilon
     scheduler.epsilon = 0.0
 

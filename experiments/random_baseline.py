@@ -36,7 +36,10 @@ def run_random_episode(verbose=False, env_class=PipelineEnv):
     }
 
 
-def run_random_experiment(num_episodes=100, env_class=PipelineEnv):
+def run_random_experiment(num_episodes=100, env_class=PipelineEnv, seed=None):
+    if seed is not None:
+        random.seed(seed)
+
     results = []
 
     for _ in range(num_episodes):
