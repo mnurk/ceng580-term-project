@@ -7,6 +7,7 @@ from statistics import mean, stdev
 from env.pipeline_env import PipelineEnv
 from env.pipeline_env_v2 import PipelineEnvV2
 from experiments.baseline import run_baseline_experiment
+from experiments.heuristic_baseline import run_heuristic_experiment
 from experiments.random_baseline import run_random_experiment
 from experiments.train_q_learning import (
     evaluate_scheduler,
@@ -96,6 +97,21 @@ def run_single_seed(environment_name, env_class, seed, training_episodes, eval_e
         eval_episodes=eval_episodes,
         q_table_size=0,
         summary=random_summary,
+    ))
+
+    heuristic_summary, _ = run_heuristic_experiment(
+        num_episodes=eval_episodes,
+        env_class=env_class,
+        seed=seed,
+    )
+    rows.append(build_result_row(
+        environment_name,
+        "heuristic",
+        seed,
+        training_episodes=0,
+        eval_episodes=eval_episodes,
+        q_table_size=0,
+        summary=heuristic_summary,
     ))
 
     scheduler, _ = train_q_learning(

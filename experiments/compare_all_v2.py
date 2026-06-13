@@ -1,5 +1,6 @@
 from env.pipeline_env_v2 import PipelineEnvV2
 from experiments.baseline import run_baseline_experiment
+from experiments.heuristic_baseline import run_heuristic_experiment
 from experiments.random_baseline import run_random_experiment
 from experiments.train_q_learning import (
     train_q_learning,
@@ -30,6 +31,11 @@ if __name__ == "__main__":
         env_class=PipelineEnvV2
     )
 
+    heuristic_summary, _ = run_heuristic_experiment(
+        num_episodes=num_eval_episodes,
+        env_class=PipelineEnvV2
+    )
+
     scheduler, _ = train_q_learning(
         num_episodes=num_training_episodes,
         verbose=False,
@@ -46,6 +52,7 @@ if __name__ == "__main__":
 
     print_summary("Static Baseline V2", static_summary)
     print_summary("Random Baseline V2", random_summary)
+    print_summary("Heuristic Baseline V2", heuristic_summary)
     print_summary("Q-learning Scheduler V2", q_learning_summary)
 
     print("\nTraining episodes:", num_training_episodes)

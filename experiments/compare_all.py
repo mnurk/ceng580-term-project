@@ -1,4 +1,5 @@
 from experiments.baseline import run_baseline_experiment
+from experiments.heuristic_baseline import run_heuristic_experiment
 from experiments.random_baseline import run_random_experiment
 from experiments.train_q_learning import (
     train_q_learning,
@@ -27,6 +28,10 @@ if __name__ == "__main__":
         num_episodes=num_eval_episodes
     )
 
+    heuristic_summary, _ = run_heuristic_experiment(
+        num_episodes=num_eval_episodes
+    )
+
     scheduler, training_results = train_q_learning(
         num_episodes=num_training_episodes,
         verbose=False
@@ -41,6 +46,7 @@ if __name__ == "__main__":
 
     print_summary("Static Baseline", static_summary)
     print_summary("Random Baseline", random_summary)
+    print_summary("Heuristic Baseline", heuristic_summary)
     print_summary("Q-learning Scheduler", q_learning_summary)
 
     print("\nTraining episodes:", num_training_episodes)
