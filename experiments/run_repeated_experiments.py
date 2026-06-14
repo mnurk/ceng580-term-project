@@ -15,6 +15,7 @@ from experiments.train_q_learning import (
     summarize_results,
     train_q_learning,
 )
+from experiments.train_sarsa import train_sarsa
 
 
 ENVIRONMENTS = {
@@ -142,6 +143,28 @@ def run_single_seed(environment_name, env_class, seed, training_episodes, eval_e
         eval_episodes=eval_episodes,
         q_table_size=len(scheduler.q_table),
         summary=q_learning_summary,
+    ))
+
+    sarsa_scheduler, _ = train_sarsa(
+        num_episodes=training_episodes,
+        env_class=env_class,
+        seed=seed,
+    )
+    sarsa_results = evaluate_scheduler(
+        scheduler=sarsa_scheduler,
+        num_episodes=eval_episodes,
+        env_class=env_class,
+        seed=seed + 100000,
+    )
+    sarsa_summary = summarize_results(sarsa_results)
+    rows.append(build_result_row(
+        environment_name,
+        "sarsa",
+        seed,
+        training_episodes=training_episodes,
+        eval_episodes=eval_episodes,
+        q_table_size=len(sarsa_scheduler.q_table),
+        summary=sarsa_summary,
     ))
 
     return rows

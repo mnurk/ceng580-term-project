@@ -6,6 +6,7 @@ from experiments.train_q_learning import (
     evaluate_scheduler,
     summarize_results
 )
+from experiments.train_sarsa import train_sarsa
 
 
 def print_summary(name, summary):
@@ -44,11 +45,25 @@ if __name__ == "__main__":
 
     q_learning_summary = summarize_results(q_learning_eval_results)
 
+    sarsa_scheduler, _ = train_sarsa(
+        num_episodes=num_training_episodes,
+        verbose=False
+    )
+
+    sarsa_eval_results = evaluate_scheduler(
+        scheduler=sarsa_scheduler,
+        num_episodes=num_eval_episodes
+    )
+
+    sarsa_summary = summarize_results(sarsa_eval_results)
+
     print_summary("Static Baseline", static_summary)
     print_summary("Random Baseline", random_summary)
     print_summary("Heuristic Baseline", heuristic_summary)
     print_summary("Q-learning Scheduler", q_learning_summary)
+    print_summary("SARSA Scheduler", sarsa_summary)
 
     print("\nTraining episodes:", num_training_episodes)
     print("Evaluation episodes:", num_eval_episodes)
     print("Learned Q-table size:", len(scheduler.q_table))
+    print("Learned SARSA Q-table size:", len(sarsa_scheduler.q_table))
