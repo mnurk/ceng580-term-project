@@ -14,6 +14,18 @@ class PipelineEnvV3:
                 2: 4,  # reviewer
             }
         )
+        self.reward_weights = config.get(
+            "v3_reward_weights",
+            {
+                "success_reward": 25,
+                "progress_reward": 2,
+                "error_penalty": 0.5,
+                "cost_penalty": 0.2,
+                "failure_penalty": 0.2,
+                "step_penalty": 0.1,
+                "budget_failure_penalty": 5,
+            }
+        )
 
     def reset(self):
         self.difficulty = random.randint(0, 2)
@@ -60,7 +72,7 @@ class PipelineEnvV3:
         done = self.__is_done()
 
         if self.budget_remaining <= 0 and self.passed_tests < self.total_tests:
-            reward -= 5
+            reward -= self.reward_weights["budget_failure_penalty"]
 
         return self.__get_state(), reward, done
 
@@ -94,13 +106,16 @@ class PipelineEnvV3:
         reward = 0
 
         if self.passed_tests == self.total_tests:
-            reward += 25
+            reward += self.reward_weights["success_reward"]
 
-        reward += (self.passed_tests - old_passed_tests) * 2
-        reward -= self.error_count * 0.5
-        reward -= action_cost * 0.2
-        reward -= self.consecutive_failures * 0.2
-        reward -= 0.1
+        reward += (
+                (self.passed_tests - old_passed_tests)
+                * self.reward_weights["progress_reward"]
+        )
+        reward -= self.error_count * self.reward_weights["error_penalty"]
+        reward -= action_cost * self.reward_weights["cost_penalty"]
+        reward -= self.consecutive_failures * self.reward_weights["failure_penalty"]
+        reward -= self.reward_weights["step_penalty"]
 
         return reward
 
