@@ -5,7 +5,9 @@ from env.pipeline_env import PipelineEnv
 
 
 def choose_heuristic_action(state, total_tests):
-    passed_tests, error_count, last_agent, _ = state
+    passed_tests = state[0]
+    error_count = state[1]
+    last_agent = state[2]
     expected_passed_tests = max(0, total_tests - error_count)
 
     if passed_tests != expected_passed_tests:

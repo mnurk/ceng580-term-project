@@ -6,6 +6,7 @@ from statistics import mean, stdev
 
 from env.pipeline_env import PipelineEnv
 from env.pipeline_env_v2 import PipelineEnvV2
+from env.pipeline_env_v3 import PipelineEnvV3
 from experiments.baseline import run_baseline_experiment
 from experiments.heuristic_baseline import run_heuristic_experiment
 from experiments.random_baseline import run_random_experiment
@@ -19,6 +20,13 @@ from experiments.train_q_learning import (
 ENVIRONMENTS = {
     "v1": PipelineEnv,
     "v2": PipelineEnvV2,
+    "v3": PipelineEnvV3,
+}
+
+TRAINING_EPISODES_BY_ENVIRONMENT = {
+    "v1": 1000,
+    "v2": 1000,
+    "v3": 10000,
 }
 
 METRICS = [
@@ -176,7 +184,6 @@ def write_json(path, rows):
 
 
 def main():
-    training_episodes = 1000
     eval_episodes = 100
     seeds = list(range(30))
     results_dir = Path("results")
@@ -185,6 +192,8 @@ def main():
     all_rows = []
 
     for environment_name, env_class in ENVIRONMENTS.items():
+        training_episodes = TRAINING_EPISODES_BY_ENVIRONMENT[environment_name]
+
         for seed in seeds:
             seed_rows = run_single_seed(
                 environment_name=environment_name,
